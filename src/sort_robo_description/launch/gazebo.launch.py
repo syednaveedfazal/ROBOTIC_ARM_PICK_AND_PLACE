@@ -4,7 +4,7 @@ from pathlib import Path
 from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetEnvironmentVariable
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, SetEnvironmentVariable, TimerAction
 from launch.substitutions import Command, LaunchConfiguration, PathJoinSubstitution, PythonExpression
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
@@ -99,13 +99,67 @@ def generate_launch_description():
         arguments=["/camera/image_raw"]
     )
 
+    # Controller Manager
+    controller_manager = Node(
+        package="controller_manager",
+        executable="ros2_control_node",
+        parameters=[
+            {"robot_description": robot_description,
+             "use_sim_time": True}
+        ],
+    )
+
+    # Joint State Broadcaster Spawner with delay
+    joint_state_broadcaster_spawner = TimerAction(
+        period=2.0,
+        actions=[
+            Node(
+                package="controller_manager",
+                executable="spawner",
+                arguments=[
+                    "joint_state_broadcaster",
+                    "--controller-manager",
+                    "/controller_manager",
+                ],
+            )
+        ]
+    )
+
+    # Arm Controller Spawner with delay
+    arm_controller_spawner = TimerAction(
+        period=2.5,
+        actions=[
+            Node(
+                package="controller_manager",
+                executable="spawner",
+                arguments=["arm_controller", "--controller-manager", "/controller_manager"],
+            )
+        ]
+    )
+
+    # Gripper Controller Spawner with delay
+    gripper_controller_spawner = TimerAction(
+        period=3.0,
+        actions=[
+            Node(
+                package="controller_manager",
+                executable="spawner",
+                arguments=["gripper_controller", "--controller-manager", "/controller_manager"],
+            )
+        ]
+    )
+
     return LaunchDescription([
         model_arg,
         world_name_arg,
         gazebo_resource_path,
         robot_state_publisher_node,
+        controller_manager,
         gazebo,
         gz_spawn_entity,
+        joint_state_broadcaster_spawner,
+        arm_controller_spawner,
+        gripper_controller_spawner,
         gz_ros2_bridge,
         ros_gz_image_bridge
     ])

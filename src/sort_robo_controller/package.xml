@@ -4,7 +4,7 @@
   <name>sort_robo_controller</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="kutkarsh706@gmail.com">utk</maintainer>
+  <maintainer email="syednaveedfazal@gmail.com">utk</maintainer>
   <license>TODO: License declaration</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
