@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <robot name="sort_robo_description" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:arg name="is_sim" default="False" />
   <xacro:arg name="is_ignition" default="False" />
 
   <xacro:include filename="$(find sort_robo_description)/urdf/gazebo.xacro" />

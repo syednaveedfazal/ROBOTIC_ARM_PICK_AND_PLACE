@@ -44,8 +44,11 @@ def generate_launch_description():
         package="controller_manager",
         executable="ros2_control_node",
         parameters=[
-            {"robot_description": robot_description,
-             "use_sim_time": is_sim},
+            {
+                "robot_description": robot_description,
+                "use_sim_time": is_sim,
+                "robot_description_topic": "/robot_description",
+            },
             os.path.join(
                 get_package_share_directory("sort_robo_controller"),
                 "config",
@@ -54,27 +57,18 @@ def generate_launch_description():
         ],
     )
 
-    joint_state_broadcaster_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=[
-            "joint_state_broadcaster",
-            "--controller-manager",
-            "/controller_manager",
-        ],
-    )
+    # Spawner nodes with longer timeout
+    def create_spawner(controller_name):
+        return Node(
+            package="controller_manager",
+            executable="spawner",
+            arguments=[controller_name, "--controller-manager", "/controller_manager", "--controller-manager-timeout", "60"],
+            output="screen",
+        )
 
-    arm_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["arm_controller", "--controller-manager", "/controller_manager"],
-    )
-
-    gripper_controller_spawner = Node(
-        package="controller_manager",
-        executable="spawner",
-        arguments=["gripper_controller", "--controller-manager", "/controller_manager"],
-    )
+    joint_state_broadcaster_spawner = create_spawner("joint_state_broadcaster")
+    arm_controller_spawner = create_spawner("arm_controller")
+    gripper_controller_spawner = create_spawner("gripper_controller")
 
     return LaunchDescription(
         [

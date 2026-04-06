@@ -5,19 +5,28 @@
 
   <ros2_control name="RobotSystem" type="system">
     
-    <!-- ros2_control Gazebo -->
-    <!-- ROS 2 Humble -->
-    <xacro:if value="$(arg is_ignition)">
+    <!-- Fake hardware for simulation -->
+    <xacro:if value="$(arg is_sim)">
       <hardware>
-        <plugin>ign_ros2_control/IgnitionSystem</plugin>
+        <plugin>fake_components/GenericSystem</plugin>
       </hardware>
     </xacro:if>
     
-    <!-- ROS 2 Iron or above -->
-    <xacro:unless value="$(arg is_ignition)">
-      <hardware>
-        <plugin>gz_ros2_control/GazeboSimSystem</plugin>
-      </hardware>
+    <!-- ros2_control Gazebo -->
+    <xacro:unless value="$(arg is_sim)">
+      <!-- ROS 2 Humble -->
+      <xacro:if value="$(arg is_ignition)">
+        <hardware>
+          <plugin>ign_ros2_control/IgnitionSystem</plugin>
+        </hardware>
+      </xacro:if>
+      
+      <!-- ROS 2 Iron or above -->
+      <xacro:unless value="$(arg is_ignition)">
+        <hardware>
+          <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+        </hardware>
+      </xacro:unless>
     </xacro:unless>
 
     <!-- Joint 1 -->

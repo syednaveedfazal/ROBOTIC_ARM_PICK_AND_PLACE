@@ -45,6 +45,7 @@ def generate_launch_description():
     robot_description = ParameterValue(Command([
             "xacro ",
             LaunchConfiguration("model"),
+            " is_sim:=False",
             " is_ignition:=",
             is_ignition
         ]),

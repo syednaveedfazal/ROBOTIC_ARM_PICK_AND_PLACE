@@ -11,7 +11,7 @@ def generate_launch_description():
             os.path.join(
                 get_package_share_directory("sort_robo_controller"),
                 "launch",
-                "controller.launch.py"
+                "sort_robo_controller.launch.py"
             ),
             launch_arguments={"is_sim": "True"}.items()
         )
