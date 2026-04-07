@@ -5,15 +5,8 @@
 
   <ros2_control name="RobotSystem" type="system">
     
-    <!-- Fake hardware for simulation -->
+    <!-- ros2_control Gazebo for simulation -->
     <xacro:if value="$(arg is_sim)">
-      <hardware>
-        <plugin>fake_components/GenericSystem</plugin>
-      </hardware>
-    </xacro:if>
-    
-    <!-- ros2_control Gazebo -->
-    <xacro:unless value="$(arg is_sim)">
       <!-- ROS 2 Humble -->
       <xacro:if value="$(arg is_ignition)">
         <hardware>
@@ -27,6 +20,13 @@
           <plugin>gz_ros2_control/GazeboSimSystem</plugin>
         </hardware>
       </xacro:unless>
+    </xacro:if>
+    
+    <!-- Fake hardware for non-simulation -->
+    <xacro:unless value="$(arg is_sim)">
+      <hardware>
+        <plugin>fake_components/GenericSystem</plugin>
+      </hardware>
     </xacro:unless>
 
     <!-- Joint 1 -->

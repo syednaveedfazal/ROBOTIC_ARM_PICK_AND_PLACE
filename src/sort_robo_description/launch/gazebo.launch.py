@@ -24,6 +24,11 @@ def generate_launch_description():
 
     world_name_arg = DeclareLaunchArgument(name="world_name", default_value="empty")
 
+    is_sim_arg = DeclareLaunchArgument(
+        name="is_sim", default_value="False",
+        description="Whether to use simulation mode"
+    )
+
     world_path = PathJoinSubstitution([
             sort_robo_description,
             "worlds",
@@ -45,7 +50,8 @@ def generate_launch_description():
     robot_description = ParameterValue(Command([
             "xacro ",
             LaunchConfiguration("model"),
-            " is_sim:=False",
+            " is_sim:=",
+            LaunchConfiguration("is_sim"),
             " is_ignition:=",
             is_ignition
         ]),
@@ -100,67 +106,14 @@ def generate_launch_description():
         arguments=["/camera/image_raw"]
     )
 
-    # Controller Manager
-    controller_manager = Node(
-        package="controller_manager",
-        executable="ros2_control_node",
-        parameters=[
-            {"robot_description": robot_description,
-             "use_sim_time": True}
-        ],
-    )
-
-    # Joint State Broadcaster Spawner with delay
-    joint_state_broadcaster_spawner = TimerAction(
-        period=2.0,
-        actions=[
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                arguments=[
-                    "joint_state_broadcaster",
-                    "--controller-manager",
-                    "/controller_manager",
-                ],
-            )
-        ]
-    )
-
-    # Arm Controller Spawner with delay
-    arm_controller_spawner = TimerAction(
-        period=2.5,
-        actions=[
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                arguments=["arm_controller", "--controller-manager", "/controller_manager"],
-            )
-        ]
-    )
-
-    # Gripper Controller Spawner with delay
-    gripper_controller_spawner = TimerAction(
-        period=3.0,
-        actions=[
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                arguments=["gripper_controller", "--controller-manager", "/controller_manager"],
-            )
-        ]
-    )
-
     return LaunchDescription([
         model_arg,
         world_name_arg,
+        is_sim_arg,
         gazebo_resource_path,
         robot_state_publisher_node,
-        controller_manager,
         gazebo,
         gz_spawn_entity,
-        joint_state_broadcaster_spawner,
-        arm_controller_spawner,
-        gripper_controller_spawner,
         gz_ros2_bridge,
         ros_gz_image_bridge
     ])
