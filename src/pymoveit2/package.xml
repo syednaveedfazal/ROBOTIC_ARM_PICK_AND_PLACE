@@ -4,6 +4,7 @@
   <version>4.0.0</version>
   <maintainer email="syednaveedfazal@gmail.com">Syed Naveed Fazal</maintainer>
   <license>Apache 2.0</license>
+  <description>Python interface for MoveIt 2</description>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
   <buildtool_depend>ament_cmake_python</buildtool_depend>
