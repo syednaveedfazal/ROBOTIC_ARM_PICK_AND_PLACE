@@ -1,0 +1,10 @@
+# sort_robo_ws Python dependencies
+# These are installed INSIDE the venv (setup_env.sh) to shadow conflicting system packages.
+# The venv is created with --system-site-packages so all ROS2/apt packages are inherited.
+
+# numpy<2 is required because the system apt cv2 (python3-opencv 4.5.4) was compiled
+# against NumPy 1.x. Pinning here shadows the globally-installed numpy 2.x.
+numpy<2
+
+# TF math utilities (used by ros-humble-tf-transformations)
+transforms3d
