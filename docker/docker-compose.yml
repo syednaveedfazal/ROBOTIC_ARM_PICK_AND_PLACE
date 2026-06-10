@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  sort_robo:
+    image: sort_robo:latest
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    network_mode: host
+    privileged: true
+    environment:
+      - DISPLAY=${DISPLAY:-:0}
+      - QT_X11_NO_MITSHM=1
+    volumes:
+      # Pass host X11 socket for GUI (Gazebo / RViz / OpenCV window)
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      # Optional: mount workspace src for live editing without rebuild
+      # - ./src:/ros2_ws/src
+    stdin_open: true
+    tty: true
+    command: >
+      bash -c "ros2 launch sort_robo_bringup pick_and_place.launch.py"

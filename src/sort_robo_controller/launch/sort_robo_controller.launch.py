@@ -47,7 +47,7 @@ def generate_launch_description():
         parameters=[
             {
                 "robot_description": robot_description,
-                "use_sim_time": True,  # Always use sim time for now
+                "use_sim_time": True,
                 "robot_description_topic": "/robot_description",
             },
             os.path.join(
@@ -56,6 +56,7 @@ def generate_launch_description():
                 "controllers.yaml",
             ),
         ],
+        condition=UnlessCondition(is_sim),
     )
 
     # Spawner nodes with longer timeout

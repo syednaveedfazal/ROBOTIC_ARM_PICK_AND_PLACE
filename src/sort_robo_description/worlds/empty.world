@@ -16,9 +16,9 @@
 
   <!-- ================= RED BOX ================= -->
   <model name="red_box">
-    <static>false</static>
+    <static>true</static>
     <link name="red_link">
-      <pose>0.6 0.6 0.70 0 0 0</pose>
+      <pose>0.6 0.45 0.70 0 0 0</pose>
       <collision name="red_collision">
         <geometry>
           <box>
@@ -42,9 +42,9 @@
 
   <!-- ================= GREEN BOX ================= -->
   <model name="green_box">
-    <static>false</static>
+    <static>true</static>
     <link name="green_link">
-      <pose>0.8 0.6 0.70 0 0 0</pose>
+      <pose>0.6 0.6 0.70 0 0 0</pose>
       <collision name="green_collision">
         <geometry>
           <box>
@@ -68,9 +68,9 @@
 
   <!-- ================= BLUE BOX ================= -->
   <model name="blue_box">
-    <static>false</static>
+    <static>true</static>
     <link name="blue_link">
-      <pose>0.4 0.6 0.70 0 0 0</pose>
+      <pose>0.6 0.70 0.70 0 0 0</pose>
       <collision name="blue_collision">
         <geometry>
           <box>

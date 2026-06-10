@@ -52,14 +52,14 @@ def generate_launch_description():
         output="screen"
     )
 
-    # ------------------- MoveIt Color Picker Node -------------------
+    # ------------------- Sequential Sorting Node -------------------
     color_picker_node = Node(
         package="pymoveit2",
         executable="pick_and_place.py",
         name="pick_and_place",
         output="screen",
         parameters=[
-            {"target_color": "B"}  # {"target_color": "R"}, {"target_color": "G"}
+            {"approach_offset": 0.15}
         ]
     )
 
