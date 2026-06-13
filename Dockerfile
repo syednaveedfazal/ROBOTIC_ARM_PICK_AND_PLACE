@@ -1,4 +1,4 @@
-FROM ros:humble-desktop
+FROM osrf/ros:humble-desktop
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV ROS_DISTRO=humble
@@ -14,9 +14,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # ----- Python packages -----
-# numpy<2 keeps compatibility with any cv2 built against NumPy 1.x.
-# opencv-python-headless 4.8+ is NumPy-2-compatible but we pin numpy anyway
-# so the constraint is explicit and reproducible.
 RUN pip3 install --no-cache-dir \
     transforms3d \
     "numpy<2" \
@@ -54,7 +51,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     ros-humble-image-transport \
     ros-humble-tf2-ros \
     ros-humble-tf-transformations \
-    python3-tf-transformations \
     && rm -rf /var/lib/apt/lists/*
 
 # ----- Robot description (Franka Panda) -----
@@ -71,19 +67,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # ----- Copy and build workspace -----
 WORKDIR /ros2_ws
 
-# Copy only the src directory so Docker cache stays valid if only src changes
 COPY src/ src/
 
-# Initialize rosdep and install any remaining dependencies
 RUN rosdep update && \
     . /opt/ros/humble/setup.sh && \
     rosdep install --from-paths src --ignore-src -r -y || true
 
-# Build the workspace
+# Build without --symlink-install so install/ is fully self-contained
 RUN . /opt/ros/humble/setup.sh && \
-    colcon build --symlink-install \
+    colcon build \
         --cmake-args -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-    && rm -rf build/
+    && rm -rf log/ build/
 
 # ----- Entrypoint -----
 COPY docker/entrypoint.sh /entrypoint.sh

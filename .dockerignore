@@ -1,0 +1,8 @@
+build/
+install/
+log/
+.git/
+.vscode/
+ref_repo/
+*.swp
+*~

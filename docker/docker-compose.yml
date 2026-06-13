@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   sort_robo:
     image: sort_robo:latest
@@ -12,11 +10,16 @@ services:
       - DISPLAY=${DISPLAY:-:0}
       - QT_X11_NO_MITSHM=1
     volumes:
-      # Pass host X11 socket for GUI (Gazebo / RViz / OpenCV window)
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      # Optional: mount workspace src for live editing without rebuild
-      # - ./src:/ros2_ws/src
     stdin_open: true
     tty: true
     command: >
-      bash -c "ros2 launch sort_robo_bringup pick_and_place.launch.py"
+      bash -c "
+        ros2 launch sort_robo_bringup pick_and_place.launch.py &
+        LAUNCH_PID=$$!;
+        echo '[docker] Waiting 20s for Gazebo + MoveIt to start...';
+        sleep 20;
+        echo '[docker] Starting pick-and-place for BLUE block...';
+        ros2 run pymoveit2 pick_and_place.py --ros-args -p target_color:=B;
+        wait $$LAUNCH_PID
+      "

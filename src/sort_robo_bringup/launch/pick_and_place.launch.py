@@ -52,21 +52,9 @@ def generate_launch_description():
         output="screen"
     )
 
-    # ------------------- Sequential Sorting Node -------------------
-    color_picker_node = Node(
-        package="pymoveit2",
-        executable="pick_and_place.py",
-        name="pick_and_place",
-        output="screen",
-        parameters=[
-            {"approach_offset": 0.15}
-        ]
-    )
-
     return LaunchDescription([
         gazebo,
         controller,
         moveit,
         vision_node,
-        color_picker_node,
     ])
